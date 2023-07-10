@@ -1,0 +1,5 @@
+Make the module list interface more concise.
+Greatly optimize the opening time of the mod list. The list can be fully displayed in less than a second when there are about 100 mods
+
+使得模组列表界面更简洁
+大幅优化了模组列表打开时长，在有一百多个Mod的情况下不需一秒即可显示列表界面

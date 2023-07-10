@@ -1,0 +1,4 @@
+displayName = Concise Mod List
+author = Cyrilly
+version = 1.0
+side = Client
