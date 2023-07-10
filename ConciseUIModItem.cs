@@ -74,7 +74,7 @@ public class ConciseUIModItem : UIModItem
 
         if (ModOrganizer.CheckStableBuildOnPreview(_mod)) {
             _keyImage = new UIHoverImage(Main.Assets.Request<Texture2D>(TextureAssets.Item[ItemID.LavaSkull].Name),
-                Language.GetTextValue("tModLoader.ModStableOnPreviewWarning"));
+                "");
 
             Append(_keyImage);
         }
@@ -100,11 +100,9 @@ public class ConciseUIModItem : UIModItem
             var toggleImage = Main.Assets.Request<Texture2D>("Images/UI/Settings_Toggle");
             updatedModDot = new UIImageFramed(toggleImage, toggleImage.Frame(2, 1, 1, 0)) {
                 Left = {Pixels = 2f, Percent = 0f},
-                Top = {Pixels = -10f, Percent = 1f},
+                Top = {Pixels = -18f, Percent = 1f},
                 Color = previousVersionHint == null ? Color.Green : new Color(6, 95, 212)
             };
-            //_modName.Left.Pixels += 18; // use these 2 for left of the modname
-
             Append(updatedModDot);
         }
 
@@ -136,13 +134,20 @@ public class ConciseUIModItem : UIModItem
         if (_borderTexture != null)
             DrawPanel(spriteBatch, _borderTexture.Value, BorderColor * opacity);
 
-        var innerDimensions = GetInnerDimensions();
-        Vector2 drawPos = new Vector2(innerDimensions.X + 10f + _modIconAdjust, innerDimensions.Y + 45f);
-
         _modIcon.Color = Color.White * opacity;
 
         // Hover text
-        if (!IsMouseHovering || _keyImage?.IsMouseHovering is true) return;
+        if (!IsMouseHovering) return;
+
+        if (_keyImage?.IsMouseHovering is true) {
+            Main.instance.MouseText(Language.GetTextValue("tModLoader.ModStableOnPreviewWarning"));
+            return;
+        }
+
+        if (updatedModDot?.IsMouseHovering is true) {
+            Main.instance.MouseText(previousVersionHint == null ? Language.GetTextValue("tModLoader.ModAddedSinceLastLaunchMessage") : Language.GetTextValue("tModLoader.ModUpdatedSinceLastLaunchMessage", previousVersionHint));
+            return;
+        }
 
         string text = _mod.DisplayName + " v" + _mod.modFile.Version;
 
