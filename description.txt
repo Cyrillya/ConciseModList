@@ -1,4 +1,4 @@
-Make the module list interface more concise.
+Make the mod list interface more concise.
 Greatly optimize the opening time of the mod list. The list can be fully displayed in less than a second when there are about 100 mods
 
 How to use:
@@ -6,6 +6,7 @@ How to use:
 - If a mod is enabled with config available, right-clicking it will open the config
 - If a mod is disabled, right-clicking it will delete it
 - Middle click a mod to enable all its dependencies
+- Click the new button on the top of the mod list to export a list of enabled mod as text
 
 使得模组列表界面更简洁
 大幅优化了模组列表打开时长，在有一百多个Mod的情况下不需一秒即可显示列表界面
@@ -15,3 +16,4 @@ How to use:
 - 如果一个模组已启用且配置可用，右键单击它将打开配置
 - 如果一个模组被禁用，右键单击它将删除它
 - 中键单击一个模组以启用其所有前置模组
+- 点击模组列表顶栏新增的按钮即可以文本形式导出启用的模组的列表

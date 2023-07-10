@@ -2,3 +2,4 @@ displayName = Concise Mod List
 author = Cyrilly
 version = 1.2
 side = Client
+homepage = https://github.com/Cyrillya/ConciseModList
