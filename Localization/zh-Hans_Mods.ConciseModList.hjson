@@ -1,3 +1,9 @@
-ModsOpenConfig: "[c/CC88AA:右键点击]打开配置"
+ModsOpenConfig: "[c/CC88AA:右键单击]打开配置"
 ModsMoreInfo: "[c/CC88AA:按下 Ctrl] 以查看更多信息"
-Delete: "[c/CC88AA:中键点击]删除Mod"
+Delete: "[c/CC88AA:右键单击]删除Mod"
+Dependencies: "[c/CC88AA:中键单击]打开所有前置模组"
+ExportEnabledMods:
+	'''
+	左键单击以文本形式导出已启用模组的列表
+	右键单击导出不带Steam创意工坊链接
+	'''

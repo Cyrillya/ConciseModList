@@ -72,8 +72,6 @@ public class ConciseUIModItem : UIModItem
             }
         }
 
-        _modReferences = _mod.properties.modReferences.Select(x => x.mod).ToArray();
-
         if (ModOrganizer.CheckStableBuildOnPreview(_mod)) {
             _keyImage = new UIHoverImage(Main.Assets.Request<Texture2D>(TextureAssets.Item[ItemID.LavaSkull].Name),
                 Language.GetTextValue("tModLoader.ModStableOnPreviewWarning"));
@@ -96,10 +94,30 @@ public class ConciseUIModItem : UIModItem
             _loaded = true;
         }
 
+        var oldModVersionData = ModOrganizer.modsThatUpdatedSinceLastLaunch.FirstOrDefault(x => x.ModName == ModName);
+        if (oldModVersionData != default) {
+            previousVersionHint = oldModVersionData.previousVersion;
+            var toggleImage = Main.Assets.Request<Texture2D>("Images/UI/Settings_Toggle");
+            updatedModDot = new UIImageFramed(toggleImage, toggleImage.Frame(2, 1, 1, 0)) {
+                Left = {Pixels = 2f, Percent = 0f},
+                Top = {Pixels = -10f, Percent = 1f},
+                Color = previousVersionHint == null ? Color.Green : new Color(6, 95, 212)
+            };
+            //_modName.Left.Pixels += 18; // use these 2 for left of the modname
+
+            Append(updatedModDot);
+        }
+
+        _modReferences = _mod.properties.modReferences.Select(x => x.mod).ToArray();
+
+        if (_modReferences.Length > 0 && !_mod.Enabled) {
+            OnMiddleClick += EnableDependencies;
+        }
+
         OnLeftClick += (e, _) => { _uiModStateText.LeftClick(e); };
 
         if (!_loaded) {
-            OnMiddleClick += QuickModDelete;
+            OnRightClick += QuickModDelete;
         }
     }
 
@@ -147,6 +165,22 @@ public class ConciseUIModItem : UIModItem
         // Config
         if (ModLoader.TryGetMod(ModName, out var loadedMod) && ConfigManager.Configs.ContainsKey(loadedMod)) {
             text += "\n" + Language.GetTextValue("Mods.ConciseModList.ModsOpenConfig");
+        }
+
+        // References
+        if (_mod != null && _modReferences.Length > 0 && (!_mod.Enabled || _mod?.Enabled != _loaded)) {
+            string refs = string.Join(", ", _mod.properties.modReferences);
+            
+            // remove the (click to enable) part in all languages
+            string outputString = Language.GetTextValue("tModLoader.ModDependencyClickTooltip", refs);
+            int index = outputString.IndexOf("\n", StringComparison.Ordinal);
+
+            if (index >= 0) {
+                outputString = outputString[..index];
+            }
+
+            text += $"\n{outputString}";
+            text += "\n" + Language.GetTextValue("Mods.ConciseModList.Dependencies");
         }
 
         // More Info

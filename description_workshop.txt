@@ -1,3 +1,7 @@
+[h2][url=https://discord.gg/rEmGMQv5z7]Discord[/url] | [url=https://github.com/Cyrillya/ConciseModList]Github[/url][/h2]
+
+[img]https://i.imgur.com/ki1CPZe.gif[/img]
+
 Make the module list interface more concise.
 Greatly optimize the opening time of the mod list. The list can be fully displayed in less than a second when there are about 100 mods
 
@@ -7,11 +11,17 @@ How to use:
 - If a mod is disabled, right-clicking it will delete it
 - Middle click a mod to enable all its dependencies
 
+
+
+[h2][url=https://discord.gg/rEmGMQv5z7]Discord[/url] | [url=https://github.com/Cyrillya/ConciseModList]Github[/url][/h2]
+
+[img]https://i.imgur.com/ki1CPZe.gif[/img]
+
 使得模组列表界面更简洁
 大幅优化了模组列表打开时长，在有一百多个Mod的情况下不需一秒即可显示列表界面
 
 操作指引：
-- 左键单击一个模组来开关它
+- 左键单击一个模组来开启/关闭它
 - 如果一个模组已启用且配置可用，右键单击它将打开配置
 - 如果一个模组被禁用，右键单击它将删除它
 - 中键单击一个模组以启用其所有前置模组

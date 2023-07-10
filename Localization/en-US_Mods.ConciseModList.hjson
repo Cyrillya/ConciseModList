@@ -1,3 +1,9 @@
 ModsOpenConfig: "[c/CC88AA:Right click] to open config"
 ModsMoreInfo: "[c/CC88AA:Press Ctrl] to see more info"
-Delete: "[c/CC88AA:Middle click] to delete the mod"
+Delete: "[c/CC88AA:Right click] to delete the mod"
+Dependencies: "[c/CC88AA:Middle click] to enable dependencies"
+ExportEnabledMods:
+	'''
+	Left click to export a list of enabled mods as text
+	Right click to export without steam workshop links
+	'''
