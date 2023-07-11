@@ -14,6 +14,15 @@ How to use:
 [*] Click the new button on the top of the mod list to export a list of enabled mods as text
 [/list]
 
+...And with full configuration support! You can adjust whether to show:
+[list]
+[*] The config button (don't worry, you can still right click on the icon to open the config)
+[*] The steam icon
+[*] The "mod updated" dot
+[*] The "no preview build" obsidian skull
+[*] And turn local mods' background color to blue!
+[/list]
+
 
 
 [h2][url=https://discord.gg/rEmGMQv5z7]Discord[/url] | [url=https://github.com/Cyrillya/ConciseModList]Github[/url][/h2]
@@ -30,4 +39,13 @@ How to use:
 [*] 如果一个模组被禁用，右键单击它将删除它
 [*] 中键单击一个模组以启用其所有依赖项
 [*] 点击模组列表顶栏新增的按钮即可以文本形式导出启用的模组的列表
+[/list]
+
+且带有完整的配置支持！你可以调整是否显示： 
+[list]
+[*] 配置按钮（不用担心，你仍然可以右键单击图标打开配置） 
+[*] Steam图标
+[*] 模组更新提示
+[*] “无测试版”黑曜石头骨
+[*] 以及将本地模组的背景颜色变回蓝色！
 [/list]

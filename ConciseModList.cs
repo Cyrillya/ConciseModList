@@ -43,8 +43,7 @@ public class ConciseModList : Mod
 
             // Adding export mod list button
             var button =
-                new UIImageButton(ModContent.Request<Texture2D>("ConciseModList/ExportListButton",
-                    AssetRequestMode.ImmediateLoad)) {
+                new UIImageButton(ModAsset.ExportListButton) {
                     Left = {Pixels = 107f},
                     Top = {Pixels = 10f},
                     _visibilityInactive = 0.8f

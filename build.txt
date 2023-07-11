@@ -1,4 +1,4 @@
-displayName = Concise Mod List
+displayName = Concise Mods List
 author = Cyrilly
 version = 1.2.1
 side = Client

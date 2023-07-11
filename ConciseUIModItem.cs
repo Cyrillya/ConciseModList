@@ -67,23 +67,34 @@ public class ConciseUIModItem : UIModItem
 
         if (ModLoader.TryGetMod(ModName, out var loadedMod) && ConfigManager.Configs.ContainsKey(loadedMod)) {
             OnRightClick += OpenConfig;
+            if (ConciseModConfig.Instance.ConfigButton) {
+                _configButton = new UIImage(ModAsset.ConfigButton) {
+                    Width = {Pixels = 32},
+                    Height = {Pixels = 32},
+                    Left = {Pixels = -32, Precent = 1f},
+                    Top = {Pixels = -32, Precent = 1f}
+                };
+                _configButton.OnLeftClick += OpenConfig;
+                Append(_configButton);
+            }
+
             if (ConfigManager.ModNeedsReload(loadedMod)) {
                 _configChangesRequireReload = true;
             }
         }
 
-        if (ModOrganizer.CheckStableBuildOnPreview(_mod)) {
+        if (ModOrganizer.CheckStableBuildOnPreview(_mod) && ConciseModConfig.Instance.ObsidianSkull) {
             _keyImage = new UIHoverImage(Main.Assets.Request<Texture2D>(TextureAssets.Item[ItemID.LavaSkull].Name),
                 "");
 
             Append(_keyImage);
         }
 
-        if (_mod.modFile.path.StartsWith(ModLoader.ModPath)) {
+        if (_mod.modFile.path.StartsWith(ModLoader.ModPath) && ConciseModConfig.Instance.PurpleBackground) {
             BackgroundColor = Color.MediumPurple * 0.7f;
             modFromLocalModFolder = true;
         }
-        else {
+        else if (ConciseModConfig.Instance.SteamIcon) {
             var steamIcon = new UIImage(TextureAssets.Extra[243]) {
                 Left = {Pixels = -22, Percent = 1f}
             };
@@ -94,16 +105,19 @@ public class ConciseUIModItem : UIModItem
             _loaded = true;
         }
 
-        var oldModVersionData = ModOrganizer.modsThatUpdatedSinceLastLaunch.FirstOrDefault(x => x.ModName == ModName);
-        if (oldModVersionData != default) {
-            previousVersionHint = oldModVersionData.previousVersion;
-            var toggleImage = Main.Assets.Request<Texture2D>("Images/UI/Settings_Toggle");
-            updatedModDot = new UIImageFramed(toggleImage, toggleImage.Frame(2, 1, 1, 0)) {
-                Left = {Pixels = 2f, Percent = 0f},
-                Top = {Pixels = -18f, Percent = 1f},
-                Color = previousVersionHint == null ? Color.Green : new Color(6, 95, 212)
-            };
-            Append(updatedModDot);
+        if (ConciseModConfig.Instance.UpdateDot) {
+            var oldModVersionData =
+                ModOrganizer.modsThatUpdatedSinceLastLaunch.FirstOrDefault(x => x.ModName == ModName);
+            if (oldModVersionData != default) {
+                previousVersionHint = oldModVersionData.previousVersion;
+                var toggleImage = Main.Assets.Request<Texture2D>("Images/UI/Settings_Toggle");
+                updatedModDot = new UIImageFramed(toggleImage, toggleImage.Frame(2, 1, 1, 0)) {
+                    Left = {Pixels = 2f, Percent = 0f},
+                    Top = {Pixels = -18f, Percent = 1f},
+                    Color = previousVersionHint == null ? Color.Green : new Color(6, 95, 212)
+                };
+                Append(updatedModDot);
+            }
         }
 
         _modReferences = _mod.properties.modReferences.Select(x => x.mod).ToArray();
@@ -112,7 +126,10 @@ public class ConciseUIModItem : UIModItem
             OnMiddleClick += EnableDependencies;
         }
 
-        OnLeftClick += (e, _) => { _uiModStateText.LeftClick(e); };
+        OnLeftClick += (e, _) => {
+            if (_configButton?.IsMouseHovering is true) return;
+            _uiModStateText.LeftClick(e);
+        };
 
         if (!_loaded) {
             OnRightClick += QuickModDelete;
@@ -145,7 +162,14 @@ public class ConciseUIModItem : UIModItem
         }
 
         if (updatedModDot?.IsMouseHovering is true) {
-            Main.instance.MouseText(previousVersionHint == null ? Language.GetTextValue("tModLoader.ModAddedSinceLastLaunchMessage") : Language.GetTextValue("tModLoader.ModUpdatedSinceLastLaunchMessage", previousVersionHint));
+            Main.instance.MouseText(previousVersionHint == null
+                ? Language.GetTextValue("tModLoader.ModAddedSinceLastLaunchMessage")
+                : Language.GetTextValue("tModLoader.ModUpdatedSinceLastLaunchMessage", previousVersionHint));
+            return;
+        }
+        
+        if (_configButton?.IsMouseHovering == true) {
+            Main.instance.MouseText(Language.GetTextValue("tModLoader.ModsOpenConfig"));
             return;
         }
 
@@ -175,7 +199,7 @@ public class ConciseUIModItem : UIModItem
         // References
         if (_mod != null && _modReferences.Length > 0 && (!_mod.Enabled || _mod?.Enabled != _loaded)) {
             string refs = string.Join(", ", _mod.properties.modReferences);
-            
+
             // remove the (click to enable) part in all languages
             string outputString = Language.GetTextValue("tModLoader.ModDependencyClickTooltip", refs);
             int index = outputString.IndexOf("\n", StringComparison.Ordinal);
