@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework.Graphics;
+using MonoMod.RuntimeDetour.HookGen;
 using ReLogic.Content;
 using Terraria;
 using Terraria.GameContent.UI.Elements;
@@ -24,7 +25,7 @@ public class ConciseModList : Mod
     public override void Load() {
         _unloading = false;
 
-        MonoModHooks.Add(typeof(UIMods).GetMethod("OnInitialize"), (Action<UIMods> orig, UIMods self) => {
+        HookEndpointManager.Add(typeof(UIMods).GetMethod("OnInitialize"), (Action<UIMods> orig, UIMods self) => {
             Interface.modsMenu.RemoveAllChildren();
             self._categoryButtons.Clear();
 
@@ -48,7 +49,7 @@ public class ConciseModList : Mod
                     Top = {Pixels = 10f},
                     _visibilityInactive = 0.8f
                 };
-            button.OnLeftClick += (_, _) => ExportMods(true);
+            button.OnClick += (_, _) => ExportMods(true);
             button.OnRightClick += (_, _) => ExportMods(false);
             button.OnUpdate += element => {
                 if (element.IsMouseHovering) {
@@ -78,7 +79,7 @@ public class ConciseModList : Mod
             self.Recalculate();
         });
 
-        MonoModHooks.Add(typeof(UIMods).GetMethod("Populate", BindingFlags.Instance | BindingFlags.NonPublic),
+        HookEndpointManager.Add(typeof(UIMods).GetMethod("Populate", BindingFlags.Instance | BindingFlags.NonPublic),
             (Action<UIMods> orig, UIMods self) => {
                 // orig(self);
 

@@ -58,12 +58,12 @@ public class ConciseUIModItem : UIModItem
         _uiModStateText = new UIModStateText(_mod.Enabled) {
             Top = {Pixels = 114514}
         };
-        _uiModStateText.OnLeftClick += ToggleEnabled;
+        _uiModStateText.OnClick += ToggleEnabled;
 
         _moreInfoButton = new UIImage(UICommon.ButtonModInfoTexture) {
             Top = {Pixels = 114514}
         };
-        _moreInfoButton.OnLeftClick += ShowMoreInfo;
+        _moreInfoButton.OnClick += ShowMoreInfo;
 
         if (ModLoader.TryGetMod(ModName, out var loadedMod) && ConfigManager.Configs.ContainsKey(loadedMod)) {
             OnRightClick += OpenConfig;
@@ -74,20 +74,13 @@ public class ConciseUIModItem : UIModItem
                     Left = {Pixels = -32, Precent = 1f},
                     Top = {Pixels = -32, Precent = 1f}
                 };
-                _configButton.OnLeftClick += OpenConfig;
+                _configButton.OnClick += OpenConfig;
                 Append(_configButton);
             }
 
             if (ConfigManager.ModNeedsReload(loadedMod)) {
                 _configChangesRequireReload = true;
             }
-        }
-
-        if (ModOrganizer.CheckStableBuildOnPreview(_mod) && ConciseModConfig.Instance.ObsidianSkull) {
-            _keyImage = new UIHoverImage(Main.Assets.Request<Texture2D>(TextureAssets.Item[ItemID.LavaSkull].Name),
-                "");
-
-            Append(_keyImage);
         }
 
         if (_mod.modFile.path.StartsWith(ModLoader.ModPath) && ConciseModConfig.Instance.PurpleBackground) {
@@ -126,9 +119,9 @@ public class ConciseUIModItem : UIModItem
             OnMiddleClick += EnableDependencies;
         }
 
-        OnLeftClick += (e, _) => {
+        OnClick += (e, _) => {
             if (_configButton?.IsMouseHovering is true) return;
-            _uiModStateText.LeftClick(e);
+            _uiModStateText.Click(e);
         };
 
         if (!_loaded) {
@@ -223,6 +216,6 @@ public class ConciseUIModItem : UIModItem
 
         text = FontAssets.MouseText.Value.CreateWrappedText(text, Main.screenWidth * 0.5f);
 
-        UICommon.TooltipMouseText(text);
+        Main.instance.MouseText(text);
     }
 }
