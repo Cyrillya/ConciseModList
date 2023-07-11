@@ -55,6 +55,11 @@ public class ConciseUIModItem : UIModItem
             });
         }
 
+        _modName = new UIText("Unavailable") {
+            Left = new StyleDimension(_modIconAdjust, 0f),
+            Top = { Pixels = 114514 }
+        };
+
         _uiModStateText = new UIModStateText(_mod.Enabled) {
             Top = {Pixels = 114514}
         };
