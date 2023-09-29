@@ -127,9 +127,9 @@ public class ConciseUIModItem : UIModItem
 
         _modReferences = _mod.properties.modReferences.Select(x => x.mod).ToArray();
 
-        if (_modReferences.Length > 0 && !_mod.Enabled) {
-            OnMiddleClick += EnableDependencies;
-        }
+        // if (_modReferences.Length > 0 && !_mod.Enabled) {
+        //     OnMiddleClick += EnableDependencies;
+        // }
 
         OnLeftClick += (e, _) => {
             if (_configButton?.IsMouseHovering is true) return;
@@ -206,7 +206,7 @@ public class ConciseUIModItem : UIModItem
             string refs = string.Join(", ", _mod.properties.modReferences);
 
             // remove the (click to enable) part in all languages
-            string outputString = Language.GetTextValue("tModLoader.ModDependencyClickTooltip", refs);
+            string outputString = Language.GetTextValue("tModLoader.ModDependencyTooltip", refs);
             int index = outputString.IndexOf("\n", StringComparison.Ordinal);
 
             if (index >= 0) {
@@ -214,7 +214,7 @@ public class ConciseUIModItem : UIModItem
             }
 
             text += $"\n{outputString}";
-            text += "\n" + Language.GetTextValue("Mods.ConciseModList.Dependencies");
+            // text += "\n" + Language.GetTextValue("Mods.ConciseModList.Dependencies");
         }
 
         // More Info
