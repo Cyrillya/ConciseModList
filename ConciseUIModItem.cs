@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -207,31 +208,53 @@ public class ConciseUIModItem : UIModItem
         if (_configButton?.IsMouseHovering is not true) return false;
 
         Main.instance.MouseText(Language.GetTextValue("tModLoader.ModsOpenConfig"));
-        return true ;
+        return true;
     }
 
     public void ModInfoHoverText() {
-        string text = _mod.DisplayName + " v" + _mod.modFile.Version;
+        var infoLines = MakeModInfoLines();
+        var text = "";
+        for (var i = 0; i < infoLines.Count; i++) {
+            var (_, line) = infoLines[i];
+            if (i >= 1)
+                text += "\n";
+            text += line;
+        }
+
+        text = FontAssets.MouseText.Value.CreateWrappedText(text, Main.screenWidth * 0.5f);
+
+        UICommon.TooltipMouseText(text);
+    }
+
+    /// <summary>
+    /// Made for more convenient IL Editing and Detours <br/>
+    /// Syntax: (Name, Text)
+    /// </summary>
+    public List<(string, string)> MakeModInfoLines() {
+        List<(string, string)> lines = [
+            ("DisplayName", $"{_mod.DisplayName} v{_mod.modFile.Version}")
+        ];
 
         // Author(s)
         if (_mod?.properties.author.Length > 0) {
-            text += "\n" + Language.GetTextValue("tModLoader.ModsByline", _mod.properties.author);
+            lines.Add(("Authors", Language.GetTextValue("tModLoader.ModsByline", _mod.properties.author)));
         }
 
         // Mod is server side
         if (_mod?.properties.side is ModSide.Server) {
-            text += "\n" + Language.GetTextValue("tModLoader.ModIsServerSide");
+            lines.Add(("ServerSide", Language.GetTextValue("tModLoader.ModIsServerSide")));
         }
 
         // Reload Required
         if (_mod?.properties.side != ModSide.Server && (_mod?.Enabled != _loaded || _configChangesRequireReload)) {
-            text +=
-                $"\n[c/FF6666:{(_configChangesRequireReload ? Language.GetTextValue("tModLoader.ModReloadForced") : Language.GetTextValue("tModLoader.ModReloadRequired"))}]";
+            lines.Add(("ReloadRequired", $"[c/FF6666:{(_configChangesRequireReload
+                ? Language.GetTextValue("tModLoader.ModReloadForced")
+                : Language.GetTextValue("tModLoader.ModReloadRequired"))}]"));
         }
 
         // Config
         if (ModLoader.TryGetMod(ModName, out var loadedMod) && ConfigManager.Configs.ContainsKey(loadedMod)) {
-            text += "\n" + Language.GetTextValue("Mods.ConciseModList.ModsOpenConfig");
+            lines.Add(("OpenConfig", Language.GetTextValue("Mods.ConciseModList.ModsOpenConfig")));
         }
 
         // References
@@ -246,21 +269,18 @@ public class ConciseUIModItem : UIModItem
                 outputString = outputString[..index];
             }
 
-            text += $"\n{outputString}";
-            // text += "\n" + Language.GetTextValue("Mods.ConciseModList.Dependencies");
+            lines.Add(("References", outputString));
         }
 
         // More Info
-        text += "\n" + Language.GetTextValue("Mods.ConciseModList.ModsMoreInfo");
+        lines.Add(("MoreInfo", Language.GetTextValue("Mods.ConciseModList.ModsMoreInfo")));
         if (Main.keyState.PressingControl()) ShowMoreInfo(new UIMouseEvent(this, Main.MouseScreen), this);
 
         // Delete
         if (!_loaded) {
-            text += "\n" + Language.GetTextValue("Mods.ConciseModList.Delete");
+            lines.Add(("Delete", Language.GetTextValue("Mods.ConciseModList.Delete")));
         }
 
-        text = FontAssets.MouseText.Value.CreateWrappedText(text, Main.screenWidth * 0.5f);
-
-        UICommon.TooltipMouseText(text);
+        return lines;
     }
 }
