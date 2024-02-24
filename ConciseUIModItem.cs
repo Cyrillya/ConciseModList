@@ -33,27 +33,7 @@ public class ConciseUIModItem : UIModItem
         };
         _modIconAdjust += 85;
         Append(_modIcon);
-
-        if (_mod.modFile.HasFile("icon.png")) {
-            Task.Run(() => {
-                try {
-                    using (_mod.modFile.Open())
-                    using (var s = _mod.modFile.GetStream("icon.png")) {
-                        var iconTexture = Main.Assets.CreateUntracked<Texture2D>(s, ".png").Value;
-
-                        if (iconTexture.Width == 80 && iconTexture.Height == 80) {
-                            _modIcon.ImageScale = 1f;
-                            _modIcon.Left.Pixels = -1;
-                            _modIcon.Top.Pixels = -1;
-                            _modIcon.SetImage(iconTexture);
-                        }
-                    }
-                }
-                catch (Exception e) {
-                    Logging.tML.Error("Unknown error", e);
-                }
-            });
-        }
+        SetIconImage();
 
         _modName = new UIText("Unavailable") {
             Left = new StyleDimension(_modIconAdjust, 0f),
@@ -131,17 +111,51 @@ public class ConciseUIModItem : UIModItem
         //     OnMiddleClick += EnableDependencies;
         // }
 
-        OnLeftClick += (e, _) => {
-            if (_configButton?.IsMouseHovering is true) return;
-            _uiModStateText.LeftClick(e);
-        };
+        SubscribeEvents();
+    }
+
+    public void SubscribeEvents() {
+        OnLeftClick += LeftClickEvent;
 
         if (!_loaded) {
             OnRightClick += QuickModDelete;
         }
     }
 
+    public void LeftClickEvent(UIMouseEvent evt, UIElement listeningelement) {
+        if (_configButton?.IsMouseHovering is true) return;
+        _uiModStateText.LeftClick(evt);
+    }
+
+    public void SetIconImage() {
+        if (_mod.modFile.HasFile("icon.png")) {
+            Task.Run(() => {
+                try {
+                    using (_mod.modFile.Open())
+                    using (var s = _mod.modFile.GetStream("icon.png")) {
+                        var iconTexture = Main.Assets.CreateUntracked<Texture2D>(s, ".png").Value;
+
+                        if (iconTexture.Width == 80 && iconTexture.Height == 80) {
+                            _modIcon.ImageScale = 1f;
+                            _modIcon.Left.Pixels = -1;
+                            _modIcon.Top.Pixels = -1;
+                            _modIcon.SetImage(iconTexture);
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    Logging.tML.Error("Unknown error", e);
+                }
+            });
+        }
+    }
+
     public override void DrawSelf(SpriteBatch spriteBatch) {
+        ManageDrawing(spriteBatch);
+        ManageHover();
+    }
+
+    public void ManageDrawing(SpriteBatch spriteBatch) {
         float opacity = _mod.Enabled ? 1f : 0.3f;
 
         // UIPanel 的 DrawSelf 内容
@@ -157,27 +171,46 @@ public class ConciseUIModItem : UIModItem
             DrawPanel(spriteBatch, _borderTexture.Value, BorderColor * opacity);
 
         _modIcon.Color = Color.White * opacity;
+    }
 
+    public void ManageHover() {
         // Hover text
         if (!IsMouseHovering) return;
 
-        if (_keyImage?.IsMouseHovering is true) {
-            Main.instance.MouseText(Language.GetTextValue("tModLoader.ModStableOnPreviewWarning"));
+        if (KeyImageHover())
             return;
-        }
+        if (UpdatedDotHover())
+            return;
+        if (ConfigButtonHover())
+            return;
 
-        if (updatedModDot?.IsMouseHovering is true) {
-            Main.instance.MouseText(previousVersionHint == null
-                ? Language.GetTextValue("tModLoader.ModAddedSinceLastLaunchMessage")
-                : Language.GetTextValue("tModLoader.ModUpdatedSinceLastLaunchMessage", previousVersionHint));
-            return;
-        }
-        
-        if (_configButton?.IsMouseHovering == true) {
-            Main.instance.MouseText(Language.GetTextValue("tModLoader.ModsOpenConfig"));
-            return;
-        }
+        ModInfoHoverText();
+    }
 
+    public bool KeyImageHover() {
+        if (_keyImage?.IsMouseHovering is not true) return false;
+
+        Main.instance.MouseText(Language.GetTextValue("tModLoader.ModStableOnPreviewWarning"));
+        return true;
+    }
+
+    public bool UpdatedDotHover() {
+        if (updatedModDot?.IsMouseHovering is not true) return false;
+
+        Main.instance.MouseText(previousVersionHint == null
+            ? Language.GetTextValue("tModLoader.ModAddedSinceLastLaunchMessage")
+            : Language.GetTextValue("tModLoader.ModUpdatedSinceLastLaunchMessage", previousVersionHint));
+        return true;
+    }
+
+    public bool ConfigButtonHover() {
+        if (_configButton?.IsMouseHovering is not true) return false;
+
+        Main.instance.MouseText(Language.GetTextValue("tModLoader.ModsOpenConfig"));
+        return true ;
+    }
+
+    public void ModInfoHoverText() {
         string text = _mod.DisplayName + " v" + _mod.modFile.Version;
 
         // Author(s)
