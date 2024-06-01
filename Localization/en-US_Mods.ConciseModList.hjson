@@ -36,5 +36,15 @@ Configs: {
 			Label: Purple Background for Local Mods
 			Tooltip: If a mod is not from steam workshop, its background will be purple
 		}
+
+		ModReferenceIcon: {
+			Label: Mod Reference Icon
+			Tooltip: The icon indicating that this mod has dependencies
+		}
+
+		TranslationModIcon: {
+			Label: Translation Mod Icon
+			Tooltip: The icon indicating that this mod translates other mods
+		}
 	}
 }

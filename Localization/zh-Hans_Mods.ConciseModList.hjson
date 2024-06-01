@@ -36,5 +36,15 @@ Configs: {
 			Label: 本地模组紫色背景
 			Tooltip: 如果模组不是从Steam创意工坊下载的，它的图标背景将为紫色
 		}
+
+		ModReferenceIcon: {
+			Label: 模组引用图标
+			Tooltip: 有依赖关系的模组会显示一个指示性的图标，以显示具体依赖关系
+		}
+
+		TranslationModIcon: {
+			Label: 翻译模组图标
+			Tooltip: 翻译类模组会显示一个图标
+		}
 	}
 }
