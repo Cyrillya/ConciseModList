@@ -22,6 +22,11 @@ Configs: {
 			Tooltip: 如果模组来自Steam创意工坊，Steam图标将出现在模组图标上
 		}
 
+		ModpackIcon: {
+			Label: 模组整合包图标
+			Tooltip: 如果模组来自模组整合包，整合包图标将出现在模组图标上
+		}
+
 		UpdateDot: {
 			Label: 更新提示
 			Tooltip: 模组更新后，第一次进入tML将会在图标左下角出现一个点，提示你模组已被更新
@@ -30,11 +35,6 @@ Configs: {
 		ObsidianSkull: {
 			Label: 黑曜石头颅
 			Tooltip: 提示你这个模组没有对应测试版的头颅图标
-		}
-
-		PurpleBackground: {
-			Label: 本地模组紫色背景
-			Tooltip: 如果模组不是从Steam创意工坊下载的，它的图标背景将为紫色
 		}
 
 		ModReferenceIcon: {

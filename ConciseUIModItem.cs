@@ -21,6 +21,8 @@ namespace ConciseModList;
 
 public class ConciseUIModItem : UIModItem
 {
+    private UIImage _deprecatedIcon;
+
     public ConciseUIModItem(LocalMod mod) : base(mod) {
         Width.Set(90f, 0f);
     }
@@ -76,15 +78,19 @@ public class ConciseUIModItem : UIModItem
             Append(_keyImage);
         }
 
-        if (_mod.modFile.path.StartsWith(ModLoader.ModPath) && ConciseModConfig.Instance.PurpleBackground) {
-            BackgroundColor = Color.MediumPurple * 0.7f;
-            modFromLocalModFolder = true;
-        }
-        else if (ConciseModConfig.Instance.SteamIcon) {
-            var steamIcon = new UIImage(TextureAssets.Extra[243]) {
-                Left = {Pixels = -22, Percent = 1f}
-            };
-            Append(steamIcon);
+        switch (_mod.location) {
+            case ModLocation.Workshop when ConciseModConfig.Instance.SteamIcon:
+                var steamIcon = new UIImage(TextureAssets.Extra[243]) {
+                    Left = { Pixels = -22, Percent = 1f }
+                };
+                Append(steamIcon);
+                break;
+            case ModLocation.Modpack when ConciseModConfig.Instance.ModpackIcon:
+                var modpackIcon = new UIImage(UICommon.ModLocationModPackIcon) {
+                    Left = { Pixels = -22, Percent = 1f }
+                };
+                Append(modpackIcon);
+                break;
         }
 
         if (loadedMod != null) {
@@ -180,18 +186,51 @@ public class ConciseUIModItem : UIModItem
             };
             Append(_translationModIcon);
         }
+
+        CheckTModLoaderVersion();
+    }
+
+    private string GetUpdateVersion(out string updateURL) {
+        string updateVersion = null;
+        updateURL = "https://github.com/tModLoader/tModLoader/wiki/tModLoader-guide-for-players#beta-branches";
+
+        // Detect if it's for a preview version ahead of our time
+        if (BuildInfo.tMLVersion.MajorMinorBuild() < _mod.tModLoaderVersion.MajorMinorBuild()) {
+            updateVersion = $"v{_mod.tModLoaderVersion}";
+
+            if (_mod.tModLoaderVersion.MajorMinor() > BuildInfo.stableVersion)
+                updateVersion = $"Preview {updateVersion}";
+        }
+
+        // Detect if it's for a different browser version entirely
+        if (!CheckIfPublishedForThisBrowserVersion(out var modBrowserVersion)) {
+            updateVersion = $"{modBrowserVersion} v{_mod.tModLoaderVersion}";
+        }
+
+        return updateVersion;
+    }
+
+    private void CheckTModLoaderVersion() {
+        if (GetUpdateVersion(out var updateURL) != null) {
+            _deprecatedIcon = new UIImage(ModAsset.Deprecated) {
+                HAlign = 0.5f,
+                VAlign = 0.5f
+            };
+            _deprecatedIcon.OnLeftClick += (a, b) => { Utils.OpenToURL(updateURL); };
+            Append(_deprecatedIcon);
+        }
     }
 
     public void SubscribeEvents() {
         OnLeftClick += LeftClickEvent;
 
-        if (!_loaded) {
+        if (!_loaded && ModOrganizer.CanDeleteFrom(_mod.location)) {
             OnRightClick += QuickModDelete;
         }
     }
 
     public void LeftClickEvent(UIMouseEvent evt, UIElement listeningelement) {
-        if (_configButton?.IsMouseHovering is true) return;
+        if (HoveringOnAnyElement(true)) return;
         _uiModStateText.LeftClick(evt);
     }
 
@@ -241,31 +280,52 @@ public class ConciseUIModItem : UIModItem
         _modIcon.Color = Color.White * opacity;
     }
 
+    private bool HoveringOnAnyElement(bool checkOnly) {
+        if (DeprecatedIconHover(checkOnly))
+            return true;
+        if (KeyImageHover(checkOnly))
+            return true;
+        if (UpdatedDotHover(checkOnly))
+            return true;
+        if (ConfigButtonHover(checkOnly))
+            return true;
+        if (IndicatorIconHover(checkOnly))
+            return true;
+        return false;
+    }
+
     public void ManageHover() {
         // Hover text
         if (!IsMouseHovering) return;
 
-        if (KeyImageHover())
-            return;
-        if (UpdatedDotHover())
-            return;
-        if (ConfigButtonHover())
-            return;
-        if (IndicatorIconHover())
+        if (HoveringOnAnyElement(false))
             return;
 
         ModInfoHoverText();
     }
 
-    public bool KeyImageHover() {
+    private bool DeprecatedIconHover(bool checkOnly) {
+        if (_deprecatedIcon?.IsMouseHovering is not true) return false;
+        if (checkOnly) return true;
+
+        string updateVersion = GetUpdateVersion(out _);
+        if (updateVersion is null) return false; // Shouldn't happen
+
+        Main.instance.MouseText(Language.GetTextValue("tModLoader.MBRequiresTMLUpdate", updateVersion));
+        return true;
+    }
+
+    public bool KeyImageHover(bool checkOnly) {
         if (_keyImage?.IsMouseHovering is not true) return false;
+        if (checkOnly) return true;
 
         Main.instance.MouseText(Language.GetTextValue("tModLoader.ModStableOnPreviewWarning"));
         return true;
     }
 
-    public bool UpdatedDotHover() {
+    public bool UpdatedDotHover(bool checkOnly) {
         if (updatedModDot?.IsMouseHovering is not true) return false;
+        if (checkOnly) return true;
 
         Main.instance.MouseText(previousVersionHint == null
             ? Language.GetTextValue("tModLoader.ModAddedSinceLastLaunchMessage")
@@ -273,22 +333,25 @@ public class ConciseUIModItem : UIModItem
         return true;
     }
 
-    public bool ConfigButtonHover() {
+    public bool ConfigButtonHover(bool checkOnly) {
         if (_configButton?.IsMouseHovering is not true) return false;
+        if (checkOnly) return true;
 
         Main.instance.MouseText(Language.GetTextValue("tModLoader.ModsOpenConfig"));
         return true;
     }
 
-    public bool IndicatorIconHover() {
+    public bool IndicatorIconHover(bool checkOnly) {
         bool hoveringOnOne = false;
 
         if (_modReferenceIcon?.IsMouseHovering == true) {
+            if (checkOnly) return true;
             UICommon.TooltipMouseText(_modRequiresTooltip);
             hoveringOnOne = true;
         }
 
         if (_translationModIcon?.IsMouseHovering == true) {
+            if (checkOnly) return true;
             string refs =
                 string.Join(", ", _mod.properties.RefNames(true)); // Translation mods can be strong or weak references.
             UICommon.TooltipMouseText(Language.GetTextValue("tModLoader.TranslationModTooltip", refs));

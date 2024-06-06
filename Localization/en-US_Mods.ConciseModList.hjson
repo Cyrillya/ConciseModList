@@ -22,6 +22,11 @@ Configs: {
 			Tooltip: If a mod is from steam workshop, the steam icon will appear on the mod icon
 		}
 
+		ModpackIcon: {
+			Label: Modpack Icon
+			Tooltip: If a mod is from mod pack, the modpack icon will appear on the mod icon
+		}
+
 		UpdateDot: {
 			Label: Update Dot
 			Tooltip: The dot that will appear on the mod icon when the mod is updated
@@ -30,11 +35,6 @@ Configs: {
 		ObsidianSkull: {
 			Label: Obsidian Skull
 			Tooltip: The skull indicating that there is no preview build for this mod
-		}
-
-		PurpleBackground: {
-			Label: Purple Background for Local Mods
-			Tooltip: If a mod is not from steam workshop, its background will be purple
 		}
 
 		ModReferenceIcon: {

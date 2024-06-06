@@ -18,9 +18,11 @@ How to use:
 [list]
 [*] The config button (don't worry, you can still right click on the icon to open the config)
 [*] The steam icon
+[*] The modpack icon
 [*] The "mod updated" dot
 [*] The "no preview build" obsidian skull
-[*] And turn local mods' background color to blue!
+[*] The mod reference icon
+[*] The translation mod icon
 [/list]
 
 
@@ -45,7 +47,9 @@ How to use:
 [list]
 [*] 配置按钮（不用担心，你仍然可以右键单击图标打开配置） 
 [*] Steam图标
+[*] 模组整合包图标
 [*] 模组更新提示
 [*] “无测试版”黑曜石头骨
-[*] 以及将本地模组的背景颜色变回蓝色！
+[*] 模组引用图标
+[*] 翻译模组图标
 [/list]
