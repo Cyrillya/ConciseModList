@@ -33,8 +33,8 @@ public class ConciseModList : Mod
             if (_unloading) return;
 
             // Repositioning filter buttons
-            if (self._categoryButtons.Count >= 3) {
-                for (int i = 0; i <= 2; i++) {
+            if (self._categoryButtons.Count >= 4) {
+                for (int i = 0; i <= 3; i++) {
                     self._categoryButtons[i].Left.Pixels -= 8f;
                 }
             }
@@ -43,18 +43,11 @@ public class ConciseModList : Mod
 
             // Adding export mod list button
             var button =
-                new UIImageButton(ModAsset.ExportListButton) {
-                    Left = {Pixels = 107f},
+                new ExportListButton {
+                    Left = {Pixels = 136f},
                     Top = {Pixels = 10f},
                     _visibilityInactive = 0.8f
                 };
-            button.OnLeftClick += (_, _) => ExportMods(true);
-            button.OnRightClick += (_, _) => ExportMods(false);
-            button.OnUpdate += element => {
-                if (element.IsMouseHovering) {
-                    Main.instance.MouseText(Language.GetTextValue("Mods.ConciseModList.ExportEnabledMods"));
-                }
-            };
             self.uIPanel.Append(button);
 
             self.uIElement.MaxWidth.Pixels = 620f;
@@ -62,18 +55,19 @@ public class ConciseModList : Mod
 
             self.modList = new ImprovedUIList {
                 Width = {Pixels = -25, Percent = 1f},
-                Height = {Pixels = ModLoader.showMemoryEstimates ? -72 : -50, Percent = 1f},
-                Top = {Pixels = ModLoader.showMemoryEstimates ? 72 : 50},
+                Height = { Pixels = -50, Percent = 1f },
+                Top = { Pixels = 50 },
                 ListPadding = 5f
             };
-            var uIScrollbar = new UIScrollbar {
-                Height = {Pixels = ModLoader.showMemoryEstimates ? -72 : -50, Percent = 1f},
-                Top = {Pixels = ModLoader.showMemoryEstimates ? 72 : 50},
+            self.uIPanel.Append(self.modList);
+
+            self.uIScrollbar = new UIScrollbar {
+                Height = { Pixels = -50, Percent = 1f },
+                Top = { Pixels = 50 },
                 HAlign = 1f
             }.WithView(100f, 1000f);
-            self.uIPanel.Append(uIScrollbar);
-            self.modList.SetScrollbar(uIScrollbar);
-            self.uIPanel.Append(self.modList);
+            self.uIPanel.Append(self.uIScrollbar);
+            self.modList.SetScrollbar(self.uIScrollbar);
 
             self.Recalculate();
         });
@@ -99,30 +93,6 @@ public class ConciseModList : Mod
         Interface.modsMenu.OnInitialize();
     }
 
-    private void ExportMods(bool withWorkshopLink) {
-        const string fileName = "enabledMods.txt";
-        string fullPath = Path.Combine(ModLoader.ModPath, fileName);
-
-        string modList = "";
-        var mods = ModOrganizer.FindMods(logDuplicates: true);
-        foreach (var mod in mods) {
-            if (!mod.Enabled) continue;
-
-            modList += $"{mod.DisplayName} v{mod.modFile.Version} ({mod.Name})";
-            if (withWorkshopLink && WorkshopHelper.GetPublishIdLocal(mod.modFile, out ulong publishId))
-                modList += $"\n  - Steam: https://steamcommunity.com/sharedfiles/filedetails/?id={publishId}";
-
-            modList += "\n";
-        }
-
-        Directory.CreateDirectory(ModLoader.ModPath);
-        System.IO.File.WriteAllText(fullPath, modList);
-
-        if (!System.IO.File.Exists(fullPath)) return;
-        Process.Start(new ProcessStartInfo(fullPath) {
-            UseShellExecute = true
-        });
-    }
 
     public override void Unload() {
         _unloading = true;
