@@ -12,6 +12,11 @@ Configs: {
 	ConciseModConfig: {
 		DisplayName: 配置选项
 
+		EnabledModsFirst: {
+			Label: 使已启用的Mod显示在列表顶部
+			Tooltip: ""
+		}
+
 		ConfigButton: {
 			Label: 配置按钮
 			Tooltip: 关掉配置按钮后，你依然可以右键来打开模组配置

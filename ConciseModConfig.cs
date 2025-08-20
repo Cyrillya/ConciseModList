@@ -9,6 +9,7 @@ public class ConciseModConfig : ModConfig
     public static ConciseModConfig Instance => ModContent.GetInstance<ConciseModConfig>();
     public override ConfigScope Mode => ConfigScope.ClientSide;
 
+    [DefaultValue(true)] public bool EnabledModsFirst;
     [DefaultValue(true)] public bool ConfigButton;
     [DefaultValue(true)] public bool SteamIcon;
     [DefaultValue(true)] public bool ModpackIcon;

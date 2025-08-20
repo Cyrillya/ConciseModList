@@ -12,6 +12,11 @@ Configs: {
 	ConciseModConfig: {
 		DisplayName: Config
 
+		EnabledModsFirst: {
+			Label: Show enabled mods at the top of the list
+			Tooltip: ""
+		}
+
 		ConfigButton: {
 			Label: Config Button
 			Tooltip: You can still right click a mod icon to open config when this is off
