@@ -407,21 +407,6 @@ public class ConciseUIModItem : UIModItem
             lines.Add(("OpenConfig", Language.GetTextValue("Mods.ConciseModList.ModsOpenConfig")));
         }
 
-        // References
-        if (_mod != null && _modReferences.Length > 0 && (!_mod.Enabled || _mod?.Enabled != _loaded)) {
-            string refs = string.Join(", ", _mod.properties.modReferences);
-
-            // remove the (click to enable) part in all languages
-            string outputString = Language.GetTextValue("tModLoader.ModDependencyTooltip", refs);
-            int index = outputString.IndexOf("\n", StringComparison.Ordinal);
-
-            if (index >= 0) {
-                outputString = outputString[..index];
-            }
-
-            lines.Add(("References", outputString));
-        }
-
         // More Info
         lines.Add(("MoreInfo", Language.GetTextValue("Mods.ConciseModList.ModsMoreInfo")));
         if (Main.keyState.PressingControl()) ShowMoreInfo(new UIMouseEvent(this, Main.MouseScreen), this);

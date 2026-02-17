@@ -13,8 +13,8 @@ Configs: {
 		DisplayName: Конфигурация
 
 		EnabledModsFirst: {
-			// Label: Show enabled mods at the top of the list
-			// Tooltip: ""
+			Label: Отображать включённые моды в самом верху списка модов
+			Tooltip: ""
 		}
 
 		ConfigButton: {

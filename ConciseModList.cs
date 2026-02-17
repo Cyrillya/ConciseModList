@@ -90,21 +90,16 @@ public class ConciseModList : Mod
             {
                 // orig(self);
 
-                Task.Run(() =>
-                {
+                self.modItemsTask = Task.Run(() => {
                     var mods = ModOrganizer.FindMods(logDuplicates: true);
-
+                    var pendingUIModItems = new List<UIModItem>();
                     foreach (var mod in mods)
                     {
-                        var modItem = new ConciseUIModItem(mod);
-                        modItem.Activate();
-                        self.items.Add(modItem);
+                        UIModItem modItem = new ConciseUIModItem(mod);
+                        pendingUIModItems.Add(modItem);
                     }
-
-                    self.needToRemoveLoading = true;
-                    self.updateNeeded = true;
-                    loading = false;
-                });
+                    return pendingUIModItems;
+                }, self._cts.Token);
             });
 
         Interface.modsMenu.OnInitialize();
