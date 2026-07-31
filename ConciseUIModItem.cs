@@ -371,7 +371,7 @@ public class ConciseUIModItem : UIModItem
             text += line;
         }
 
-        text = FontAssets.MouseText.Value.CreateWrappedText(text, Main.screenWidth * 0.5f);
+        text = FontAssets.MouseText.Value.CreateWrappedText(text, Main.screenWidth * 0.5f, Language.ActiveCulture.CultureInfo);
 
         UICommon.TooltipMouseText(text);
     }
