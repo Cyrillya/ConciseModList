@@ -1,0 +1,55 @@
+ModsOpenConfig: "[c/CC88AA:Clic derecho] para abrir la configuración"
+ModsMoreInfo: "[c/CC88AA:Presione Ctrl] para ver más información"
+Delete: "[c/CC88AA:Clic derecho] para borrar el mod"
+Dependencies: "[c/CC88AA:Clic central] para habilitar las dependencias"
+ExportEnabledMods:
+	'''
+	Haz clic izquierdo para exportar una lista de mods habilitados como texto
+	Haz clic derecho para exportar sin enlaces de Steam Workshop
+	'''
+
+Configs: {
+	ConciseModConfig: {
+		DisplayName: Configuración
+
+		EnabledModsFirst: {
+			Label: Mostrar los mods habilitados, en la parte superior de la lista
+			Tooltip: ""
+		}
+
+		ConfigButton: {
+			Label: Botón de configuración
+			Tooltip: Aún puedes hacer clic derecho en un ícono de mod para abrir la configuración cuando esta opción está desactivada
+		}
+
+		SteamIcon: {
+			Label: Icono de Steam
+			Tooltip: Si un mod es de Steam Workshop, el ícono de Steam aparecerá en el ícono del mod
+		}
+
+		ModpackIcon: {
+			Label: Icono de Modpack
+			Tooltip: Si un mod es de un paquete de mods, el ícono del Modpack aparecerá en el ícono del mod
+		}
+
+		UpdateDot: {
+			Label: Punto de recien actualizado
+			Tooltip: El punto que aparecerá en el ícono del mod cuando el mod se actualice
+		}
+
+		ObsidianSkull: {
+			Label: Cráneo de obsidiana
+			Tooltip: El cráneo indica que no hay una versión preliminar para este mod
+		}
+
+		ModReferenceIcon: {
+			Label: Icono de referencia de mod
+			Tooltip: El icono que indica que este mod tiene dependencias
+		}
+
+		TranslationModIcon: {
+			Label: Icono de Mod de Traducción
+			Tooltip: El icono que indica que este mod traduce otros mods
+		}
+	}
+}
